@@ -39,7 +39,7 @@ describe('handlers', () => {
     const stubTest = (test) => {
         test = test || {};
 
-        test.fullTitle = test.fullTitle || sinon.stub().returns(test.title || 'default-title');
+        test.title = test.title || 'default-title';
 
         return test;
     };
@@ -102,9 +102,9 @@ describe('handlers', () => {
             assert.callOrder(tsm.testStarted, tsm.testFinished);
         });
 
-        it('should trim full test title', () => {
+        it('should trim test title', () => {
             const test = stubTest({
-                fullTitle: sinon.stub().returns('  test  '),
+                title: '  test  ',
                 browserId: 'bro'
             });
 
@@ -112,6 +112,27 @@ describe('handlers', () => {
 
             assert.calledWith(tsm.testStarted, {name: 'test [bro]'});
             assert.calledWithMatch(tsm.testFinished, {name: 'test [bro]'});
+        });
+
+        it('should include suite titles', () => {
+            const test = stubTest({
+                title: 'test',
+                browserId: 'bro',
+                parent: {
+                    title: 'bar',
+                    parent: {
+                        title: 'foo',
+                        parent: {
+                            root: true
+                        }
+                    }
+                }
+            });
+
+            handlers.onTestPass(test);
+
+            assert.calledWith(tsm.testStarted, {name: 'foo: bar: test [bro]'});
+            assert.calledWithMatch(tsm.testFinished, {name: 'foo: bar: test [bro]'});
         });
 
         it('should copy & report reference images', () => {
@@ -247,9 +268,9 @@ describe('handlers', () => {
             assert.callOrder(tsm.testStarted, tsm.testFailed, tsm.testFinished);
         });
 
-        it('should trim full test title', () => {
+        it('should trim test title', () => {
             const test = stubTest({
-                fullTitle: sinon.stub().returns('  test  '),
+                title: '  test  ',
                 browserId: 'bro'
             });
 
@@ -258,6 +279,28 @@ describe('handlers', () => {
             assert.calledWith(tsm.testStarted, {name: 'test [bro]'});
             assert.calledWithMatch(tsm.testFailed, {name: 'test [bro]'});
             assert.calledWithMatch(tsm.testFinished, {name: 'test [bro]'});
+        });
+
+        it('should include suite titles', () => {
+            const test = stubTest({
+                title: 'test',
+                browserId: 'bro',
+                parent: {
+                    title: 'bar',
+                    parent: {
+                        title: 'foo',
+                        parent: {
+                            root: true
+                        }
+                    }
+                }
+            });
+
+            handlers.onTestFail(test);
+
+            assert.calledWith(tsm.testStarted, {name: 'foo: bar: test [bro]'});
+            assert.calledWithMatch(tsm.testFailed, {name: 'foo: bar: test [bro]'});
+            assert.calledWithMatch(tsm.testFinished, {name: 'foo: bar: test [bro]'});
         });
 
         it('should copy & report reference images', () => {
