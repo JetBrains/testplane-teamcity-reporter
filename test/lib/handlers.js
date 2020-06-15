@@ -40,6 +40,7 @@ describe('handlers', () => {
         test = test || {};
 
         test.title = test.title || 'default-title';
+        test.fullTitle = test.fullTitle || sinon.stub().returns(test.title);
 
         return test;
     };
