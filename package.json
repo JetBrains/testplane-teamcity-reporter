@@ -1,6 +1,6 @@
 {
   "name": "@jetbrains/hermione-teamcity-reporter",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Plugin to report results for TeamCity CI",
   "repository": {
     "type": "git",
