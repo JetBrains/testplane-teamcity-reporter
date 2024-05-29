@@ -1,5 +1,5 @@
 {
-  "name": "@jetbrains/hermione-teamcity-reporter",
+  "name": "@jetbrains/testplane-teamcity-reporter",
   "version": "1.2.2",
   "description": "Plugin to report results for TeamCity CI",
   "repository": {
